@@ -5,4 +5,4 @@ __pycache__/
 .env
 .adk/
 vector_store/
-enviroment_agent/
+environment_agent/
