@@ -13,8 +13,8 @@ os.environ["OLLAMA_API_BASE"] = "http://localhost:11434"
 
 root_agent = Agent(
     model=LiteLlm(
-        model="ollama_chat/glm-5.3-flash:cloud",
-        reasoning_effort="low"
+        model="ollama_chat/qwen3:8b",
+        reasoning_effort="none"
     ),
     name='root_agent',
     description='A helpful assistant for user questions.',
