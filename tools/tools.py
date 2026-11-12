@@ -116,7 +116,7 @@ def delete_collection(c_name: str) -> str:
 
 def index_file(path: str, c_name: str) -> list:
     """
-    Lee un archivo (.txt, .md o .pdf) y lo indexa en la base de datos vectorial.
+    Lee un archivo (.txt, .md o .pdf) detectando su codificación y lo indexa en la base de datos vectorial.
     Args:
         path: str -> Ruta del archivo a indexar.
         c_name: str -> Nombre de la colección donde se guardarán los fragmentos.
@@ -128,8 +128,16 @@ def index_file(path: str, c_name: str) -> list:
             from pypdf import PdfReader
             text = "\n".join(page.extract_text() or "" for page in PdfReader(path).pages)
         else:
-            with open(path, "r", encoding="utf-8") as f:
-                text = f.read()
+            with open(path, "rb") as f:
+                raw = f.read()
+            for encoding in ("utf-8-sig", "utf-16", "cp1252"):
+                try:
+                    text = raw.decode(encoding)
+                    break
+                except UnicodeDecodeError:
+                    continue
+            else:
+                text = raw.decode("latin-1")
 
         if not text.strip():
             return "El archivo no contiene texto para indexar."
